@@ -8,6 +8,7 @@ from face_detection import detect
 
 
 # Defining CreateWidgets() function to create necessary tkinter widgets
+# Defining CreateWidgets() function to create necessary tkinter widgets
 def createwidgets():
     root.feedlabel = Label(root, bg="steelblue", fg="white", text="WEBCAM FEED", font=('Comic Sans MS',20))
     root.feedlabel.grid(row=1, column=1, padx=10, pady=10, columnspan=2)
@@ -99,7 +100,8 @@ def imageBrowse():
     
     # Displaying the directory in the directory textbox
     imagePath.set(root.openDirectory)
-    
+    print('test')
+    print(imagePath)
     # Opening the saved image using the open() of Image class which takes the saved image as the argument
     imageView = Image.open(root.openDirectory)
     
@@ -189,11 +191,11 @@ def StartPredict():
     image = cv2.imread(root.openDirectory)
     rgb = cv2.cvtColor(image, cv2.COLOR_BGR2BGRA)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
-    
-    canvas = detect(rgb, gray)
-    
-    predict_image = Image.fromarray(canvas)
 
+    canvas = detect(rgb, gray)
+
+    predict_image = Image.fromarray(canvas)
+    predict_image = predict_image.resize((250, 250), Image.ANTIALIAS)
     # Creating object of PhotoImage() class to display the frame
     predict_image = ImageTk.PhotoImage(predict_image)
 
@@ -202,7 +204,7 @@ def StartPredict():
 
     # Keeping a reference
     root.imageLabel.photo = predict_image
-    
+
 
 
 
