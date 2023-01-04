@@ -1,6 +1,6 @@
 1.	Clone repo link từ github: https://github.com/nghiaxir/Nhap_mom_ML.git
 
-2.	Download bộ dataset từ Kaggle và lưu ở project: Age prediction | Kaggle
+2.	Download bộ dataset từ Kaggle và lưu ở project: [Age prediction | Kaggle](https://www.kaggle.com/datasets/mariafrenti/age-prediction?select=age_prediction_up&fbclid=IwAR1mhG7sLMQKUqgCUU1aF27tpErkI_rpqXNMN2wDUu3SjyNKSFfM1Qxi7vw)
 
 3. Cài đặt các thư viện còn thiếu. Lệnh: pip install (thư viện)
 
