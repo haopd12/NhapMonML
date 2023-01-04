@@ -3,7 +3,9 @@ import cv2
 import numpy as np
 from tensorflow import keras
 
-model = keras.models.load_model('D:/chuyen_nganh/20221/machine_learning/project/Nhap_mom_ML-hao/Nhap_mom_ML-hao/models5')
+# Load Model
+model = keras.models.load_model('D:/chuyen_nganh/20221/machine_learning/project/Nhap_mom_ML-hao/Nhap_mom_ML-hao/models')
+# Create ImageDataGenerator
 test_generator = keras.preprocessing.image.ImageDataGenerator(
     rescale=1./255
 )
@@ -24,23 +26,18 @@ def detect(gray, frame):
     
     for (x, y, w, h) in faces: # For each detected face: (faces is the tuple of x,y--point of upper left corner,w-width,h-height)
         cv2.rectangle(frame, (x,y), (x+w,y+h), (255,0,0), 3)  #frame on which rectangle will be there,top-left,bottom-right,color,thickness
-        img_cat = frame[x:y, x+w:y+h]
-        img_age = np.resize(img_cat, (3, 120, 120, 3))
+        img_cat = frame[x:y, x+w:y+h] #Create images
+        img_age = np.resize(img_cat, (3, 120, 120, 3))  #resize image
         img_age = img_age.astype('float32')
         # model.predict(img_age)
-        img_pedict = test_generator.flow(img_age, batch_size=32, shuffle=True)
-        output_predict = int(np.squeeze(model.predict(img_pedict)).item(0))
+        img_pedict = test_generator.flow(img_age, batch_size=32, shuffle=True) # Change image to dataframe
+        output_predict = int(np.squeeze(model.predict(img_pedict)).item(0)) # Predict
         col = (0, 255, 0)
-        cv2.putText(frame, str(output_predict), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, h/200, col ,2)
-        roi_gray = gray[y:y+h, x:x+w] # We get the region of interest in the black and white image. (range from y to y+h)
-        #This region is calculated as to save computation time to again search for eyes in whole image
-        #It's better to detect a face and take the region of interest i.e. face and find eyes in it
-        roi_color = frame[y:y+h, x:x+w] # We get the region of interest in the colored image.
-        
-        eyes = eye_cascade.detectMultiScale(roi_gray, scaleFactor=1.1,minNeighbors=22)
-        
-        for (ex, ey, ew, eh) in eyes: # For each detected eye: (Again retrieving x,y,w,h)
-            cv2.rectangle(roi_color,(ex, ey),(ex+ew, ey+eh), (0, 255, 0), 3)
+        cv2.putText(frame, str(output_predict), (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, h/200, col ,2) # Display result
+        # roi_gray = gray[y:y+h, x:x+w] # We get the region of interest in the black and white image. (range from y to y+h)
+        # #This region is calculated as to save computation time to again search for eyes in whole image
+        # #It's better to detect a face and take the region of interest i.e. face and find eyes in it
+        # roi_color = frame[y:y+h, x:x+w] # We get the region of interest in the colored image.
         
     return frame # We return the image with the detector rectangles.  
 

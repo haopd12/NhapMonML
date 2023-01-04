@@ -7,14 +7,14 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from sklearn.metrics import r2_score
 
+# Load images
 image_dir = Path('D:/chuyen_nganh/20221/machine_learning/project/Nhap_mom_ML-hao/Nhap_mom_ML-hao/age_prediction/train')
 filepaths = pd.Series(list(image_dir.glob(r'**/*.jpg')), name='Filepath').astype(str)
 ages = pd.Series(filepaths.apply(lambda x: os.path.split(os.path.split(x)[0])[1]), name='Age').astype(np.int)
 images = pd.concat([filepaths, ages], axis=1).sample(frac=1.0, random_state=1).reset_index(drop=True)
 train_df, test_df = train_test_split(images, train_size=0.7, shuffle=True, random_state=1)
 
-
-
+# Create ImageDataGenerator
 train_generator = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1./255,
     validation_split=0.2
@@ -23,7 +23,7 @@ test_generator = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1./255
 )
 
-
+# Change iamges to dataframe
 train_images = train_generator.flow_from_dataframe(
     dataframe=train_df,
     x_col='Filepath',
@@ -61,7 +61,7 @@ test_images = test_generator.flow_from_dataframe(
     shuffle=False
 )
 
-
+# Create Model
 inputs = tf.keras.Input(shape=(120, 120, 3))
 x = tf.keras.layers.Conv2D(filters=16, kernel_size=(3, 3), activation='relu')(inputs)
 x = tf.keras.layers.MaxPool2D()(x)
@@ -79,15 +79,17 @@ model.compile(
     loss='mse'
 )
 
-print('okkkk')
+# Train Model
 history = model.fit(
     train_images,
     validation_data=val_images,
     epochs=120
 )
 
+# Save Model
 model.save('models8')
 
+# Predict test images
 predicted_ages = np.squeeze(model.predict(test_images))
 true_ages = test_images.labels
 
@@ -96,9 +98,9 @@ print("     Test RMSE: {:.5f}".format(rmse))
 
 r2 = r2_score(true_ages, predicted_ages)
 print("Test R^2 Score: {:.5f}".format(r2))
+
 # list all data in history
 print(history.history.keys())
-# summarize history for accuracy
 # summarize history for loss
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
